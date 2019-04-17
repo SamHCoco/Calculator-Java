@@ -73,6 +73,9 @@ public class Controller {
     private boolean intermediateOperandRequired; // handles whether intermediate calculation required
     private boolean operatorPressed; // for determining whether the button pressed is an operator or not
     private boolean isInitialized; // handles displaying zero prior to any user calculations
+    private int digitCounter; // the number of digits in the number on the text field
+    private final double MAX_VALUE = 9_999_999_999_999_999D;
+    private final double MIN_VALUE = 0.00000000000001;
 
     /**
      * Handles all button click events (clicking number buttons and operator buttons).
@@ -82,32 +85,42 @@ public class Controller {
     public void buttonClicked(ActionEvent event){
         // Ensures clear screen for next calculation after division by zero or invalid syntax
         if(resultDisplay.getText().equals("UNDEFINED") || resultDisplay.getText().equals("INVALID SYNTAX")
-                || isInitialized){
+                || resultDisplay.getText().equals("CALC LIMIT HIT") ||isInitialized){
             isInitialized = false;
             clearScreen();
         }
 
         // Statements that handle the user pressing the number buttons
-        if(event.getSource() == btnOne){
+        if(event.getSource() == btnOne && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "1");
-        }else if(event.getSource() == btnTwo){
+            digitCounter++;
+        }else if(event.getSource() == btnTwo && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "2");
-        } else if(event.getSource() == btnThree){
+            digitCounter++;
+        } else if(event.getSource() == btnThree && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "3");
-        } else if(event.getSource() == btnFour){
+            digitCounter++;
+        } else if(event.getSource() == btnFour && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "4");
-        } else if(event.getSource() == btnFive){
+            digitCounter++;
+        } else if(event.getSource() == btnFive && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "5");
-        } else if(event.getSource() == btnSix){
+            digitCounter++;
+        } else if(event.getSource() == btnSix && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "6");
-        } else if(event.getSource() == btnSeven){
+            digitCounter++;
+        } else if(event.getSource() == btnSeven && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "7");
-        } else if(event.getSource() == btnEight){
+            digitCounter++;
+        } else if(event.getSource() == btnEight && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "8");
-        } else if(event.getSource() == btnNine){
+            digitCounter++;
+        } else if(event.getSource() == btnNine && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "9");
-        } else if(event.getSource() == btnZero){
+            digitCounter++;
+        } else if(event.getSource() == btnZero && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "0");
+            digitCounter++;
         } else if(event.getSource() == decimalPoint){
             resultDisplay.setText(resultDisplay.getText() + ".");
 
@@ -191,33 +204,51 @@ public class Controller {
                 case 1:
                     // addition case
                     if(intermediateOperandRequired) {
-                        firstOperand = firstOperand + secondOperand;
-                        prepareForNextCalc();
-                        equalsCalculation();
+                        if(!isMaxValueReached(firstOperand + secondOperand) &&
+                                !isMinValueReached(firstOperand + secondOperand)){
+                            firstOperand = firstOperand + secondOperand;
+                            prepareForNextCalc();
+                            equalsCalculation();
+                        }
                     }else {
-                        finalResult = firstOperand + secondOperand;
+                        if(!isMaxValueReached(firstOperand + secondOperand) &&
+                                !isMinValueReached(firstOperand + secondOperand) ){
+                            finalResult = firstOperand + secondOperand;
+                        }
                         break;
                     }
                     break;
                 case 2:
                     // subtraction case
                     if(intermediateOperandRequired) {
-                        firstOperand = firstOperand - secondOperand;
-                        prepareForNextCalc();
-                        equalsCalculation();
+                        if(!isMaxValueReached(firstOperand - secondOperand) &&
+                                !isMinValueReached(firstOperand - secondOperand)){
+                            firstOperand = firstOperand - secondOperand;
+                            prepareForNextCalc();
+                            equalsCalculation();
+                        }
                     }else{
-                        finalResult = firstOperand - secondOperand;
+                        if(!isMaxValueReached(firstOperand - secondOperand)  &&
+                                !isMinValueReached(firstOperand - secondOperand)){
+                            finalResult = firstOperand - secondOperand;
+                        }
                         break;
                     }
                     break;
                 case 3:
                     // multiplication case
                     if(intermediateOperandRequired){
-                        firstOperand = firstOperand * secondOperand;
-                        prepareForNextCalc();
-                        equalsCalculation();
+                        if(!isMaxValueReached(firstOperand * secondOperand) &&
+                                !isMinValueReached(firstOperand * secondOperand)){
+                            firstOperand = firstOperand * secondOperand;
+                            prepareForNextCalc();
+                            equalsCalculation();
+                        }
                     }else{
-                        finalResult = firstOperand * secondOperand;
+                        if(!isMaxValueReached(firstOperand * secondOperand) &&
+                                !isMinValueReached(firstOperand * secondOperand)){
+                            finalResult = firstOperand * secondOperand;
+                        }
                         break;
                     }
                     break;
@@ -227,11 +258,15 @@ public class Controller {
                         resultDisplay.setText("UNDEFINED");
                     } else {
                         if(intermediateOperandRequired){
-                            firstOperand = firstOperand / secondOperand;
-                            prepareForNextCalc();
-                            equalsCalculation();
+                            if(!isMaxValueReached(firstOperand / secondOperand)){
+                                firstOperand = firstOperand / secondOperand;
+                                prepareForNextCalc();
+                                equalsCalculation();
+                            }
                         } else {
-                            finalResult = firstOperand / secondOperand;
+                            if(!isMaxValueReached(firstOperand / secondOperand)){
+                                finalResult = firstOperand / secondOperand;
+                            }
                             break;
                         }
                     }
@@ -276,7 +311,7 @@ public class Controller {
      * Stores the operator the clicked, for calculations involving two or more operators (e.g. 1 + 2 -3)
      * @return The operator to be used in current calculation
      */
-    public int determineOperator(){
+    public Integer determineOperator(){
         // saves first operator
         if(firstOperand != null && secondOperand == null && operatorStorage[0] == null){
             operatorStorage[0] = String.valueOf(operator);
@@ -285,8 +320,13 @@ public class Controller {
         if(intermediateOperandRequired){
             operatorStorage[1] = String.valueOf(operator);
         }
+        try{
         // the operator to be used in calculation is always the [0] element of 'operatorStorage' array
-        return Integer.valueOf(operatorStorage[0]);
+            return Integer.valueOf(operatorStorage[0]);
+        } catch (NumberFormatException e){
+            System.out.println("ERROR Determining Operator: " + e.getMessage());
+        }
+        return null;
     }
 
 
@@ -299,12 +339,55 @@ public class Controller {
         operatorStorage[0] = operatorStorage[1];
     }
 
+    /**
+     * Determines whether user has input the maximum number the calculator is programmed
+     * to deal with.
+     * @return True if the max number is reached, false otherwise
+     */
+    private boolean isMaxInputReached(){
+        if(digitCounter == 16){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Determines whether the maximum value the calculator is programmed
+     * to handle has been reach.
+     * @param calculatedValue - the value from current calculation
+     * @return true if max value reached, false otherwise
+     */
+    private boolean isMaxValueReached(double calculatedValue){
+        if(calculatedValue > MAX_VALUE){
+            resultDisplay.setText("CALC LIMIT HIT");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Determines whether the minimum value the calculator is programmed
+     * to handle has been reach.
+     * @param calculatedValue - the value from current calculation
+     * @return true if minimum value reached, false otherwise
+     */
+    private boolean isMinValueReached(double calculatedValue){
+        if(calculatedValue <= MIN_VALUE){
+            resultDisplay.setText("CALC LIMIT HIT");
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Cleans screen for user to supply next input.
      */
     private void clearScreen(){
         resultDisplay.setText("");
+        digitCounter = 0;
     }
 
     /**
