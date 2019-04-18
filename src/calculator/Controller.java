@@ -1,10 +1,11 @@
 package calculator;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
-import java.lang.Double;
+
+import java.text.DecimalFormat;
 
 public class Controller {
     @FXML
@@ -93,34 +94,34 @@ public class Controller {
         // Statements that handle the user pressing the number buttons
         if(event.getSource() == btnOne && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "1");
-            digitCounter++;
+            formatUserInput();
         }else if(event.getSource() == btnTwo && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "2");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnThree && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "3");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnFour && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "4");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnFive && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "5");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnSix && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "6");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnSeven && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "7");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnEight && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "8");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnNine && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "9");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == btnZero && !isMaxInputReached()){
             resultDisplay.setText(resultDisplay.getText() + "0");
-            digitCounter++;
+            formatUserInput();
         } else if(event.getSource() == decimalPoint){
             resultDisplay.setText(resultDisplay.getText() + ".");
 
@@ -258,13 +259,15 @@ public class Controller {
                         resultDisplay.setText("UNDEFINED");
                     } else {
                         if(intermediateOperandRequired){
-                            if(!isMaxValueReached(firstOperand / secondOperand)){
+                            if(!isMaxValueReached(firstOperand / secondOperand)  &&
+                                    !isMinValueReached(firstOperand / secondOperand)){
                                 firstOperand = firstOperand / secondOperand;
                                 prepareForNextCalc();
                                 equalsCalculation();
                             }
                         } else {
-                            if(!isMaxValueReached(firstOperand / secondOperand)){
+                            if(!isMaxValueReached(firstOperand / secondOperand) &&
+                                    !isMinValueReached(firstOperand / secondOperand)){
                                 finalResult = firstOperand / secondOperand;
                             }
                             break;
@@ -283,9 +286,10 @@ public class Controller {
      * @exception NumberFormatException when the text in user input box cannot be parsed as Double.
      */
     private void setOperand(){
+        String rawNumber = extractRawNumber();
         if(firstOperand == null && secondOperand == null) {
             try {
-                firstOperand = Double.valueOf(resultDisplay.getText());
+                firstOperand = Double.valueOf(rawNumber);
                 clearScreen();
             } catch(NumberFormatException e){
                 resultDisplay.setText("INVALID SYNTAX");
@@ -294,7 +298,7 @@ public class Controller {
 
         }else if(secondOperand == null){
             try {
-                secondOperand = Double.valueOf(resultDisplay.getText());
+                secondOperand = Double.valueOf(rawNumber);
                 clearScreen();
             } catch(NumberFormatException e){
                 resultDisplay.setText("INVALID SYNTAX");
@@ -345,9 +349,12 @@ public class Controller {
      * @return True if the max number is reached, false otherwise
      */
     private boolean isMaxInputReached(){
-        if(digitCounter == 16){
+        if(digitCounter == 15){
+            System.out.println("digit counter: " + digitCounter);
             return true;
         } else {
+            digitCounter++;
+            System.out.println("digit counter: " + digitCounter);
             return false;
         }
     }
@@ -409,6 +416,8 @@ public class Controller {
         if(numberDelete.length() != 0){
             // outputs the first and next to last number of original number (deletes last digit)
             resultDisplay.setText(numberDelete.substring(0, numberDelete.length() - 1));
+            digitCounter--;
+            System.out.println("digits counter: " + digitCounter);
         }
     }
 
@@ -417,7 +426,67 @@ public class Controller {
      */
     private void displayResult(){
         if(finalResult != null) {
-            resultDisplay.setText(String.valueOf(finalResult));
+            DecimalFormat df = new DecimalFormat("#,###,###,###,###,###.###############");
+            String unformattedResult  = String.valueOf(finalResult);
+            StringBuilder formattedResult = new StringBuilder();
+            double displayResult;
+            int digits = 0;
+            int i = 0;
+            if(unformattedResult.length() >= 16){
+                while(digits != 16){
+                    if(unformattedResult.charAt(i) != '.'){
+                        formattedResult.append(unformattedResult.charAt(i));
+                        digits++;
+                    } else {
+                        formattedResult.append(unformattedResult.charAt(i));
+                    }
+                }
+                displayResult = Double.valueOf(formattedResult.toString());
+                resultDisplay.setText(df.format(displayResult));
+            } else {
+                resultDisplay.setText(df.format(finalResult));
+            }
+
         }
+    }
+
+    /**
+     * Formats numbers clicked into text-field to have #,###,###,###,###,### format.
+     * If the number in the text field contains a decimal point then  the formatting stops.
+     */
+    public void formatUserInput(){
+        try{
+            String rawNumber = extractRawNumber();
+            Double inputAsNumber = Double.valueOf(rawNumber);
+            boolean containsDecimalPoint = false;
+            for(int i = 0; i < rawNumber.length(); i++){
+                if(rawNumber.charAt(i) == '.'){
+                    containsDecimalPoint = true;
+                }
+            }
+            if(!containsDecimalPoint){
+                DecimalFormat df = new DecimalFormat("###,###,###,###,###.##############");
+                resultDisplay.setText(df.format(inputAsNumber));
+            }
+        } catch(NumberFormatException e) {
+            System.out.println("Input Formatting Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Extracts the number from the text field (which has format #,###,###.##)
+     * and converts it into its raw form, e.g. 4,0535.60 becomes '40535.60',
+     * and returns this as a string, so that it can be used in calculations.
+     * @return A string of the number in the text field, in its raw form (no comma separators).
+     */
+    public String extractRawNumber(){
+        String userInput = resultDisplay.getText();
+        StringBuilder rawNumber = new StringBuilder();
+        for(int i = 0; i < userInput.length(); i++ ){
+            if(userInput.charAt(i) != ','){
+                rawNumber.append(userInput.charAt(i));
+            }
+        }
+        return rawNumber.toString();
     }
 }
