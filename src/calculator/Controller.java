@@ -433,7 +433,7 @@ public class Controller {
             double displayResult;
             int digits = 0;
             int i = 0;
-            if(unformattedResult.length() >= 15){
+            if(unformattedResult.length() >= 16){
                 while(digits != 15){
                     if(unformattedResult.charAt(i) != '.'){
                         formattedResult.append(unformattedResult.charAt(i));
