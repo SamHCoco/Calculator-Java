@@ -426,25 +426,28 @@ public class Controller {
      */
     private void displayResult(){
         if(finalResult != null) {
-            DecimalFormat df = new DecimalFormat("#,###,###,###,###,###.###############");
-            String unformattedResult  = String.valueOf(finalResult);
+            DecimalFormat df1 = new DecimalFormat("#,###,###,###,###,###.###############");
+            DecimalFormat df2 = new DecimalFormat("################.###############");
+            String unformattedResult  = String.valueOf(df2.format(finalResult));
             StringBuilder formattedResult = new StringBuilder();
             double displayResult;
             int digits = 0;
             int i = 0;
-            if(unformattedResult.length() >= 16){
-                while(digits != 16){
+            if(unformattedResult.length() >= 15){
+                while(digits != 15){
                     if(unformattedResult.charAt(i) != '.'){
                         formattedResult.append(unformattedResult.charAt(i));
                         digits++;
+                        i++;
                     } else {
                         formattedResult.append(unformattedResult.charAt(i));
+                        i++;
                     }
                 }
                 displayResult = Double.valueOf(formattedResult.toString());
-                resultDisplay.setText(df.format(displayResult));
+                resultDisplay.setText(df1.format(displayResult));
             } else {
-                resultDisplay.setText(df.format(finalResult));
+                resultDisplay.setText(df1.format(finalResult));
             }
 
         }
