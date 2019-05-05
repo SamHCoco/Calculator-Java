@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane gridLinesVisible="false" hgap="0" vgap="0" xmlns="http://javafx.com/javafx/8.0.121"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="calculator.Controller" style="-fx-background-color: white;">
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="20" />
+        <ColumnConstraints percentWidth="20" />
+        <ColumnConstraints percentWidth="20" />
+        <ColumnConstraints percentWidth="20" />
+        <ColumnConstraints percentWidth="20" />
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints percentHeight="25" />
+        <RowConstraints percentHeight="18.75" />
+        <RowConstraints percentHeight="18.75" />
+        <RowConstraints percentHeight="18.75" />
+        <RowConstraints percentHeight="18.75" />
+    </rowConstraints>
+    <!-- Label which displays the results of calculations -->
+    <Label fx:id="resultDisplay" GridPane.columnSpan="5"
+           style="-fx-font-size: 42px;" textFill="black"
+           GridPane.valignment="BOTTOM" GridPane.halignment="RIGHT" />
+
+    <!-- 1st row of buttons -->
+    <Button text="1" fx:id="btnOne" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="0" GridPane.rowIndex="1" onAction="#buttonClicked" />
+
+    <Button text="2" fx:id="btnTwo" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#buttonClicked" />
+
+    <Button text="3" fx:id="btnThree" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="2" GridPane.rowIndex="1" onAction="#buttonClicked" />
+
+    <Button text="DEL" fx:id="delete" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 16px;"
+            GridPane.columnIndex="3" GridPane.rowIndex="1" onAction="#buttonClicked" />
+
+    <Button text="CLEAR" fx:id="clearScreen" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 13px;"
+            GridPane.columnIndex="4" GridPane.rowIndex="1" onAction="#buttonClicked"/>
+
+    <!-- 2nd row of buttons -->
+    <Button text="4" fx:id="btnFour" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="0" GridPane.rowIndex="2" onAction="#buttonClicked"/>
+
+    <Button text="5" fx:id="btnFive" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#buttonClicked" />
+
+    <Button text="6" fx:id="btnSix" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#buttonClicked"/>
+
+    <Button text="➕" fx:id="addOperator" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 28px;"
+            GridPane.columnIndex="3" GridPane.rowIndex="2" onAction="#buttonClicked" />
+
+    <Button text="➖" fx:id="subtractOperator" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 28px;"
+            GridPane.columnIndex="4" GridPane.rowIndex="2" onAction="#buttonClicked" />
+
+    <!-- 3rd row of buttons -->
+    <Button text="7" fx:id="btnSeven" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="0" GridPane.rowIndex="3" onAction="#buttonClicked" />
+
+    <Button text="8" fx:id="btnEight" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#buttonClicked" />
+
+    <Button text="9" fx:id="btnNine" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="2" GridPane.rowIndex="3" onAction="#buttonClicked" />
+
+    <Button text="✖" fx:id="multiplyOperator" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 28px;"
+            GridPane.columnIndex="3" GridPane.rowIndex="3" onAction="#buttonClicked" />
+
+    <Button text="➗" fx:id="divideOperator" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 28px;"
+            GridPane.columnIndex="4" GridPane.rowIndex="3" onAction="#buttonClicked"/>
+
+
+    <!-- 4th row of buttons -->
+    <Button text="0" fx:id="btnZero" prefHeight="124.0" prefWidth="230.0"
+            style="-fx-border-color: white; -fx-background-color: teal; -fx-font-size: 28px;" textFill="white"
+            GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3" onAction="#buttonClicked" />
+
+    <Button text="•" fx:id="decimalPoint" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 28px;"
+            GridPane.columnIndex="3" GridPane.rowIndex="4" onAction="#buttonClicked" />
+
+    <Button text="=" fx:id="equals" prefHeight="124.0" prefWidth="194.0"
+            style="-fx-border-color: white; -fx-font-size: 32px;"
+            GridPane.columnIndex="4" GridPane.rowIndex="4" onAction="#buttonClicked" />
+
+</GridPane>
